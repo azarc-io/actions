@@ -117,7 +117,7 @@ runs:
         //npm.fontawesome.com/:_authToken=${{ inputs.npmrc-fontawesome-token }}
         EOF
     - name: "Login To Code Artifact"
-      uses: ./.github/actions/codeartifact
+      uses: ./codeartifact
       if: inputs.npmrc-output-path != ''
       id: configure
       with:
