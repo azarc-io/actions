@@ -47,9 +47,12 @@ jobs:
           git config --global user.email "${{ github.event.pusher.email }}"
           git config --global user.name "${{ github.event.pusher.name }}"
           git add .
-          git commit -m 'release: v${{ steps.versioning.outputs.version }}'
+          git commit -m 'release: ${{ steps.versioning.outputs.version }}'
           git tag v${{ steps.versioning.outputs.version }}
           git push origin --tags
+          MAJOR_TAG=$(echo "${{ steps.versioning.outputs.version }}" | sed "s/\..*//")
+          git tag $MAJOR_TAG -f -a -m "Update tag with version ${{ steps.versioning.outputs.version }}"
+          git push origin tag $MAJOR_TAG --force
 
       - name: "Build Changelog"
         id: build_changelog

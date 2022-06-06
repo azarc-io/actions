@@ -25,7 +25,7 @@ runs:
       shell: bash
       id: extract
       working-directory: ${{ github.action_path }}
-      run: go run main.go
+      run: $GITHUB_ACTION_PATH/dist/$(echo "$OS" | tr "[:upper:]" "[:lower:]")
       env:
         INPUT_REF: ${{ inputs.ref }}
         INPUT_ENVIRONMENT: ${{ inputs.environment }}
