@@ -16,6 +16,9 @@ inputs:
   version:
     description: 'The version number to set in the helm values'
     required: true
+  revision:
+    description: 'The revision or commit sha to use'
+    required: true
 runs:
   using: "composite"
   steps:
