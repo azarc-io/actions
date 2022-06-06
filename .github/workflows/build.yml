@@ -38,7 +38,6 @@ jobs:
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
           format: "${major}.${minor}.${patch}"
-          change_path: "cmd/verathread internal pkg deployments scripts"
           namespace: ""
           bump_each_commit: true
           short_tags: false
