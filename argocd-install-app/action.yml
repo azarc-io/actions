@@ -7,14 +7,14 @@ inputs:
   server:
     description: 'The argocd server to connect to'
     required: true
-  username:
-    description: 'A argocd username'
-    required: true
-  password:
-    description: 'Password for the assigned argocd username'
+  auth-token:
+    description: 'Auth token for ArgoCD'
     required: true
   project:
     description: 'The name of the project (eg. VTHP-123), you can use the ticket action to retrieve this'
+    required: true
+  version:
+    description: 'The version number to set in the helm values'
     required: true
 runs:
   using: "composite"
