@@ -5,6 +5,7 @@ on:
       - "*.*"
     branches:
       - main
+      - feat/**
 
 jobs:
   build_go_binary_and_release:
