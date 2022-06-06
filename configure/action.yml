@@ -56,6 +56,10 @@ runs:
     - name: "Clean Workspace"
       shell: bash
       run: sudo find /home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/. -name . -o -prune -exec rm -rf -- {} + || true
+    - name: "Checkout"
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: "Configure Git"
       shell: bash
       run: |
