@@ -24,4 +24,5 @@ runs:
   steps:
     - name: "Install"
       shell: bash
-      run: echo "Ticket ${{ inputs.ticket }} Version ${{ inputs.version }}"
+      run: |
+        echo "ArgoCD: Ticket ${{ inputs.ticket }} Version ${{ inputs.version }} Revision ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
