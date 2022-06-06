@@ -7,6 +7,10 @@ inputs:
   aws-secret-access-key:
     required: true
     description: "The aws-secret-access-key used to authenticate with AWS"
+  aws-region:
+    required: true
+    description: "The aws region to use"
+    default: us-east-1
   aws-account-id:
     required: true
     description: "The aws account id used to authenticate with code artifact"
@@ -121,7 +125,7 @@ runs:
       if: inputs.npmrc-output-path != ''
       id: configure
       with:
-        region: us-east-1K
+        region: ${{ inputs.aws-region }}
         domain: npm
         owner: ${{ inputs.aws-account-id }}
         type: npm
