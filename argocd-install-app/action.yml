@@ -10,8 +10,8 @@ inputs:
   auth-token:
     description: 'Auth token for ArgoCD'
     required: true
-  project:
-    description: 'The name of the project (eg. VTHP-123), you can use the ticket action to retrieve this'
+  ticket:
+    description: 'The ticket number to use (eg. VTHP-123), you can use the ticket action to retrieve this'
     required: true
   version:
     description: 'The version number to set in the helm values'
@@ -21,4 +21,4 @@ runs:
   steps:
     - name: "Install"
       shell: bash
-      run: echo "Ticket ${{ steps.ticket.outputs.ticket }} Version ${{ inputs.version }}"
+      run: echo "Ticket ${{ inputs.ticket }} Version ${{ inputs.version }}"
