@@ -116,8 +116,8 @@ runs:
         //npm.fontawesome.com/:always-auth=true
         //npm.fontawesome.com/:_authToken=${{ inputs.npmrc-fontawesome-token }}
         EOF
-    - name: "Login To AWS Code Artifact"
-      uses: ${GITHUB_ACTION_PATH}/../codeartifact
+    - name: "Login To Code Artifact"
+      uses: azarc-io/codeartifact@v0.0.2
       if: inputs.npmrc-output-path != ''
       id: configure
       with:
