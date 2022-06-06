@@ -5,6 +5,7 @@ on:
       - "*.*"
     branches:
       - main
+      - feat/**
 
 jobs:
   build_go_binary_and_release:
@@ -37,7 +38,6 @@ jobs:
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
           format: "${major}.${minor}.${patch}"
-          change_path: "cmd/verathread internal pkg deployments scripts"
           namespace: ""
           bump_each_commit: true
           short_tags: false
@@ -50,9 +50,9 @@ jobs:
           git commit -m 'release: ${{ steps.versioning.outputs.version }}'
           git tag v${{ steps.versioning.outputs.version }}
           git push origin --tags
-          MAJOR_TAG=$(echo "${{ steps.versioning.outputs.version }}" | sed "s/\..*//")
-          git tag $MAJOR_TAG -f -a -m "Update tag with version ${{ steps.versioning.outputs.version }}"
-          git push origin tag $MAJOR_TAG --force
+#          MAJOR_TAG=$(echo "${{ steps.versioning.outputs.version }}" | sed "s/\..*//")
+#          git tag $MAJOR_TAG -f -a -m "Update tag with version ${{ steps.versioning.outputs.version }}"
+#          git push origin tag $MAJOR_TAG --force
 
       - name: "Build Changelog"
         id: build_changelog
