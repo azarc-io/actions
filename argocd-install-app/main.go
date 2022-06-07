@@ -86,12 +86,11 @@ func install(cfg *Config, action *ga.Action) error {
 		panic(err)
 	}
 	// create application
-	app := &v1alpha1.Application{}
+	app := v1alpha1.Application{}
 	err = yaml.Unmarshal(tpl.Bytes(), &app)
 	if err != nil {
 		return err
 	}
-	action.Infof("template: %s", string(tpl.Bytes()))
 	// app client
 	closer, ac, err := client.NewApplicationClient()
 	if err != nil {
@@ -120,10 +119,13 @@ func install(cfg *Config, action *ga.Action) error {
 		})
 	}
 
+	b, _ := yaml.Marshal(tpl)
+	action.Infof("template:\n %s", string(b))
+
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5)
 	defer cancel()
 	_, err = ac.Create(ctx, &application.ApplicationCreateRequest{
-		Application: *app,
+		Application: app,
 		Upsert:      boolRef(true),
 		Validate:    boolRef(true),
 	})
