@@ -44,7 +44,7 @@ jobs:
           env GOOS=darwin GOARCH=amd64 go build -o dist/macos
 
       - name: Build ArgoCD Install Action
-        working-directory: ./argocd-install-app
+        working-directory: ./argocd
         shell: bash
         run: |
           env GOOS=linux GOARCH=amd64 go build -o dist/linux

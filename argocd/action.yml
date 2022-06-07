@@ -28,6 +28,10 @@ inputs:
   use-sudo:
     required: false
     description: "True if sudo should be used when executing shell commands"
+  action:
+    required: true
+    description: "The action to run (create, delete)"
+    default: "create"
 runs:
   using: "composite"
   steps:
@@ -52,3 +56,4 @@ runs:
         INPUT_REVISION: ${{ inputs.revision }}
         INPUT_TEMPLATE: ${{ inputs.template }}
         INPUT_SERVICE_LIST: ${{ inputs.service_list }}
+        INPUT_ACTION: ${{ inputs.action }}
