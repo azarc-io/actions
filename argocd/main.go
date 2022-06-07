@@ -19,17 +19,18 @@ import (
 )
 
 type Config struct {
-	GrpcWeb   bool
-	Server    string
-	AuthToken string
-	Ticket    string
-	Version   string
-	Revision  string
-	Template  string
-	Services  []string
-	Workspace string
-	client    apiclient.Client
-	Action    string
+	GrpcWeb             bool
+	Server              string
+	AuthToken           string
+	Ticket              string
+	Version             string
+	Revision            string
+	Template            string
+	Services            []string
+	Workspace           string
+	client              apiclient.Client
+	Action              string
+	DestroyBeforeCreate bool
 }
 
 func run(action *ga.Action) error {
@@ -49,6 +50,11 @@ func run(action *ga.Action) error {
 
 	switch cfg.Action {
 	case "create":
+		if cfg.DestroyBeforeCreate {
+			if err := deleteAction(cfg, action); err != nil {
+				return err
+			}
+		}
 		return installAction(cfg, action)
 	case "delete":
 		return deleteAction(cfg, action)
@@ -190,14 +196,15 @@ func execWait(label string, args *Config) error {
 
 func newCfgFromInputs(action *ga.Action) (*Config, error) {
 	c := &Config{
-		GrpcWeb:   action.GetInput("grpc_web") == "true",
-		Server:    action.GetInput("server"),
-		AuthToken: action.GetInput("auth_token"),
-		Ticket:    action.GetInput("ticket"),
-		Version:   action.GetInput("version"),
-		Revision:  action.GetInput("revision"),
-		Template:  action.GetInput("template"),
-		Action:    action.GetInput("action"),
+		GrpcWeb:             action.GetInput("grpc_web") == "true",
+		Server:              action.GetInput("server"),
+		AuthToken:           action.GetInput("auth_token"),
+		Ticket:              action.GetInput("ticket"),
+		Version:             action.GetInput("version"),
+		Revision:            action.GetInput("revision"),
+		Template:            action.GetInput("template"),
+		Action:              action.GetInput("action"),
+		DestroyBeforeCreate: action.GetInput("destroy_before_create") == "true",
 	}
 
 	sl := action.GetInput("service_list")
