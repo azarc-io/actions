@@ -87,6 +87,45 @@ func deleteAction(cfg *Config, action *ga.Action) error {
 		Name:    stringRef(issueLower),
 		Cascade: boolRef(true),
 	})
+	if err != nil && !strings.HasSuffix(err.Error(), "not found") {
+		action.Warningf("failed to delete project %s: %s", issueLower, err.Error())
+		return err
+	} else if err != nil {
+		action.Infof("skipping deletion, project does not exist")
+	}
+
+	timer := time.NewTicker(time.Second * 5)
+	timeout := time.NewTicker(time.Second * 240)
+LOOP:
+	for {
+		select {
+		case <-timer.C:
+			_, err := ac.Get(context.Background(), &application.ApplicationQuery{
+				Name: stringRef(issueLower),
+			})
+			if err != nil {
+				if strings.Contains(err.Error(), "project is referenced by") {
+					action.Infof("waiting for cluster to be destroyed")
+					timer.Reset(time.Second * 5)
+				} else if !strings.HasSuffix(err.Error(), "not found") {
+					timer.Stop()
+					timeout.Stop()
+					action.Fatalf("failed to delete the project: %s", err.Error())
+					break LOOP
+				} else {
+					timer.Stop()
+					timeout.Stop()
+					break LOOP
+				}
+			} else {
+				timer.Reset(time.Second * 5)
+			}
+		case <-timeout.C:
+			action.Warningf("timed out while destroying cluster")
+			timer.Stop()
+			break LOOP
+		}
+	}
 
 	return err
 }
