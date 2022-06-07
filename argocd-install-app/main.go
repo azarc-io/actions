@@ -158,7 +158,7 @@ func install(cfg *Config, action *ga.Action) error {
 func execWait(label string, args *Config) error {
 	c := cmd.NewCommand(
 		fmt.Sprintf("argocd app wait -l %s --timeout 240 --health --sync --health --operation --auth-token %s --server %s --grpc-web", label, args.AuthToken, args.Server),
-		cmd.WithStandardStreams)
+		cmd.WithStandardStreams, cmd.WithTimeout(time.Minute*5))
 	return c.Execute()
 }
 
