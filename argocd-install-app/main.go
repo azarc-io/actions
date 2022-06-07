@@ -12,6 +12,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"html/template"
 	"io"
+	"path"
 	"strings"
 	"time"
 )
@@ -25,6 +26,7 @@ type Config struct {
 	Revision  string
 	Template  string
 	Services  []string
+	Workspace string
 }
 
 func run(action *ga.Action) error {
@@ -64,7 +66,7 @@ func install(cfg *Config, action *ga.Action) error {
 	}
 
 	// load template
-	file, err := readFile(cfg.Template)
+	file, err := readFile(path.Join(cfg.Workspace, cfg.Template))
 	if err != nil {
 		return err
 	}
@@ -168,6 +170,12 @@ func newCfgFromInputs(action *ga.Action) (*Config, error) {
 
 	sl := action.GetInput("service_list")
 	c.Services = strings.Split(strings.TrimSpace(sl), "\n")
+
+	ctx, err := action.Context()
+	if err != nil {
+		return nil, err
+	}
+	c.Workspace = ctx.Workspace
 
 	return c, nil
 }
