@@ -127,6 +127,7 @@ func install(cfg *Config, action *ga.Action) error {
 		Validate:    boolRef(true),
 	})
 	if err != nil {
+		action.Warningf("could not deploy app: %v", app)
 		action.Fatalf("failed to deploy app: %s", err.Error())
 	}
 
