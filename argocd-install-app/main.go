@@ -52,7 +52,7 @@ func install(cfg *Config, action *ga.Action) error {
 		issueLower = strings.ToLower(cfg.Ticket)
 	)
 
-	action.Infof("creating new project for [issue]: %s", issueLower)
+	action.Infof("creating new project for [issue]: %s [grpc-web]: %v", issueLower, cfg.GrpcWeb)
 
 	// create client
 	client, err := apiclient.NewClient(&apiclient.ClientOptions{
