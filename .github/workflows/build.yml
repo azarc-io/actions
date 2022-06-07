@@ -34,6 +34,14 @@ jobs:
           env GOOS=windows GOARCH=amd64 go build -o dist/windows
           env GOOS=darwin GOARCH=amd64 go build -o dist/macos
 
+      - name: Build ArgoCD Install Action
+        working-directory: ./argocd-install-app
+        shell: bash
+        run: |
+          env GOOS=linux GOARCH=amd64 go build -o dist/linux
+          env GOOS=windows GOARCH=amd64 go build -o dist/windows
+          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
+
       - name: "Update Versions"
         uses: paulhatch/semantic-version@v4.0.3
         id: versioning

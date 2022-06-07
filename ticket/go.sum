@@ -7,6 +7,8 @@ github.com/sethvargo/go-envconfig v0.6.0 h1:GxxdoeiNpWgGiVEphNFNObgMYRN/ZvI2dN7r
 github.com/sethvargo/go-envconfig v0.6.0/go.mod h1:00S1FAhRUuTNJazWBWcJGvEHOM+NO6DhoRMAOX7FY5o=
 github.com/sethvargo/go-githubactions v1.0.0 h1:5mYGPNxIwIXaS8MLj4uYGWM8QM8giUVqA4FuSYOZjXE=
 github.com/sethvargo/go-githubactions v1.0.0/go.mod h1:UaidDD1ENTLXzTtj/4MnYjY40/5WLijgn2O8KBsdv7o=
+github.com/sethvargo/go-githubactions v1.0.1-0.20220602175510-27ad5ab98e18 h1:Qb9JjfJo0vBk8yWsKz9dBWAIuuXAaRh3uMUPkqX7+7I=
+github.com/sethvargo/go-githubactions v1.0.1-0.20220602175510-27ad5ab98e18/go.mod h1:UaidDD1ENTLXzTtj/4MnYjY40/5WLijgn2O8KBsdv7o=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.7.2 h1:4jaiDzPyXQvSd7D0EjG45355tLlV3VOECpq10pLC+8s=
 github.com/stretchr/testify v1.7.2/go.mod h1:R6va5+xMeoiuVRoj+gSkQ7d3FALtqAAGI1FQKckRals=
