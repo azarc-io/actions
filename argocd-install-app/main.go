@@ -91,6 +91,7 @@ func install(cfg *Config, action *ga.Action) error {
 	if err != nil {
 		return err
 	}
+	action.Infof("template: %s", string(tpl.Bytes()))
 	// app client
 	closer, ac, err := client.NewApplicationClient()
 	if err != nil {
