@@ -1,9 +1,10 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	ga "github.com/sethvargo/go-githubactions"
+	"os"
+	"strings"
 )
 
 type Config struct {
@@ -34,6 +35,14 @@ func run(action *ga.Action) error {
 }
 
 func newCfgFromInputs(action *ga.Action) (*Config, error) {
+	for _, s := range os.Environ() {
+		action.Infof("env: %s", s)
+		parts := strings.Split(s, "=")
+		if len(parts) == 2 {
+			action.SetEnv(parts[0], parts[1])
+		}
+	}
+
 	c := &Config{
 		GrpcWeb:   action.GetInput("grpc-web"),
 		Server:    action.GetInput("server"),
@@ -47,7 +56,6 @@ func newCfgFromInputs(action *ga.Action) (*Config, error) {
 }
 
 func main() {
-	flag.Parse()
 	action := ga.New()
 	err := run(action)
 	if err != nil {

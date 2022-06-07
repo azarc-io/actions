@@ -26,7 +26,7 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       run: |
-        echo "ArgoCD Input: [Ticket] ${{ inputs.ticket }} [Version] ${{ inputs.version }} [Revision] ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "ArgoCD Input: [Ticket] ${{ inputs.ticket }} [Version] ${{ inputs.version }} [Revision] ${{ inputs.revision }}" >> $GITHUB_STEP_SUMMARY
         curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-linux-amd64
         chmod +x /tmp/argocd
         ./dist/$(echo "${{runner.os}}" | tr "[:upper:]" "[:lower:]")
