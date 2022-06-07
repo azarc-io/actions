@@ -86,7 +86,7 @@ func install(cfg *Config, action *ga.Action) error {
 		panic(err)
 	}
 	// create application
-	app := v1alpha1.Application{}
+	app := &v1alpha1.Application{}
 	err = yaml.Unmarshal(tpl.Bytes(), &app)
 	if err != nil {
 		return err
@@ -122,7 +122,7 @@ func install(cfg *Config, action *ga.Action) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5)
 	defer cancel()
 	_, err = ac.Create(ctx, &application.ApplicationCreateRequest{
-		Application: app,
+		Application: *app,
 		Upsert:      boolRef(true),
 		Validate:    boolRef(true),
 	})
