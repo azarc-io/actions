@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/argoproj/argo-cd/v2/pkg/apiclient"
 	"github.com/argoproj/argo-cd/v2/pkg/apiclient/application"
@@ -68,12 +69,12 @@ func install(cfg *Config, action *ga.Action) error {
 	// load template
 	file, err := readFile(path.Join(cfg.Workspace, cfg.Template))
 	if err != nil {
-		return err
+		action.Fatalf("could not load template: %s", err.Error())
 	}
 	// parse template
 	t, err := template.New("app").Parse(file)
 	if err != nil {
-		panic(err)
+		action.Fatalf("could not parse template: %s", err.Error())
 	}
 	// template model
 	var tpl bytes.Buffer
@@ -83,7 +84,7 @@ func install(cfg *Config, action *ga.Action) error {
 		"VERSION":  cfg.Version,
 	})
 	if err != nil {
-		panic(err)
+		action.Fatalf("could not execute template: %s", err.Error())
 	}
 	// create application
 	app := v1alpha1.Application{}
@@ -119,7 +120,7 @@ func install(cfg *Config, action *ga.Action) error {
 		})
 	}
 
-	b, _ := yaml.Marshal(tpl)
+	b, _ := json.MarshalIndent(tpl, "", " ")
 	action.Infof("template:\n %s", string(b))
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5)
