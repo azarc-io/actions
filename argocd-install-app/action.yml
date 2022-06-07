@@ -25,6 +25,9 @@ inputs:
   service_list:
     description: 'The list of services to generate version numbers for (<name>:<path>) will generate .Values.<name>: <version>'
     required: true
+  use-sudo:
+    required: false
+    description: "True if sudo should be used when executing shell commands"
 runs:
   using: "composite"
   steps:
@@ -33,8 +36,12 @@ runs:
       working-directory: ${{ github.action_path }}
       run: |
         echo "ArgoCD Input: [Ticket] ${{ inputs.ticket }} [Version] ${{ inputs.version }} [Revision] ${{ inputs.revision }}" >> $GITHUB_STEP_SUMMARY
-        curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-        chmod +x /usr/local/bin/argocd
+        if [ ${{ inputs.use-sudo }} = true ] ; then
+          sudo /bin/sh -c 'wget -q https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 -O /usr/local/bin/argocd && chmod +x /usr/local/bin/argocd'
+        else
+          /bin/sh -c 'wget -q https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 -O /usr/local/bin/argocd && chmod +x /usr/local/bin/argocd'
+        fi
+
         ./dist/$(echo "${{runner.os}}" | tr "[:upper:]" "[:lower:]")
       env:
         INPUT_GRPC_WEB: ${{ inputs.grpc_web }}
