@@ -1,13 +1,13 @@
 name: 'ArgoCD Install App'
 description: 'Parses a deployment template and deploys it'
 inputs:
-  grpc-web:
+  grpc_web:
     description: 'Use "grpc-web" option when login'
     required: false
   server:
     description: 'The argocd server to connect to'
     required: true
-  auth-token:
+  auth_token:
     description: 'Auth token for ArgoCD'
     required: true
   ticket:
@@ -19,6 +19,12 @@ inputs:
   revision:
     description: 'The revision or commit sha to use'
     required: true
+  template:
+    description: 'The ArgoCD Application template'
+    required: true
+  service_list:
+    description: 'The list of services to generate version numbers for (<name>:<path>) will generate .Values.<name>: <version>'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -27,6 +33,15 @@ runs:
       working-directory: ${{ github.action_path }}
       run: |
         echo "ArgoCD Input: [Ticket] ${{ inputs.ticket }} [Version] ${{ inputs.version }} [Revision] ${{ inputs.revision }}" >> $GITHUB_STEP_SUMMARY
-        curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-linux-amd64
-        chmod +x /tmp/argocd
+        curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x /usr/local/bin/argocd
         ./dist/$(echo "${{runner.os}}" | tr "[:upper:]" "[:lower:]")
+      env:
+        INPUT_GRPC_WEB: ${{ inputs.grpc_web }}
+        INPUT_SERVER: ${{ inputs.server }}
+        INPUT_AUTH_TOKEN: ${{ inputs.auth_token }}
+        INPUT_TICKET: ${{ inputs.ticket }}
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_REVISION: ${{ inputs.revision }}
+        INPUT_TEMPLATE: ${{ inputs.template }}
+        INPUT_SERVICE_LIST: ${{ inputs.service_list }}
