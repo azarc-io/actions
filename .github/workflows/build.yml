@@ -73,7 +73,7 @@ jobs:
           path: ./ticket/dist/
 
   build_slack:
-    name: Build Ticket Vars
+    name: Build Slack
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -81,17 +81,18 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
       - uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('./slack/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Build Ticket Action
+            ${{ runner.os }}-node-
+      - name: Build Slack Action
         working-directory: ./slack
         shell: bash
         run: |
@@ -102,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: slack
-          path: ./slack/lib/
+          path: ./slack/dist/
 
   release:
     name: Release
@@ -111,7 +112,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+        with:
+          fetch-depth: 3
       - name: "Download Ticket Artifacts"
         if: env.DRY_RUN == false
         uses: actions/download-artifact@v3
