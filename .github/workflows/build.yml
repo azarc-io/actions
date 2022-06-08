@@ -89,7 +89,7 @@ jobs:
       - name: "Download Ticket Artifacts"
         if: env.DRY_RUN == false
         uses: actions/download-artifact@v3
-        id: frontend
+        id: ticket
         with:
           name: ticket
           path: ./ticket/dist/
