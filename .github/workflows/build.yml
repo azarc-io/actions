@@ -23,7 +23,7 @@ jobs:
           path: |
             ~/.cache/go-build
             ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ hashFiles('./argocd/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Build ArgoCD Install Action
@@ -55,7 +55,7 @@ jobs:
           path: |
             ~/.cache/go-build
             ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ hashFiles('./ticket/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
       - name: Build Ticket Action
