@@ -221,6 +221,18 @@ func installAction(cfg *Config, action *ga.Action) error {
 		action.Errorf("failed to sync app, it is probably already being synced: %s", err.Error())
 	}
 
+	ac.Get(ctx, &application.ApplicationQuery{
+		Name:                 nil,
+		Refresh:              nil,
+		Projects:             nil,
+		ResourceVersion:      "",
+		Selector:             "",
+		Repo:                 "",
+		XXX_NoUnkeyedLiteral: struct{}{},
+		XXX_unrecognized:     nil,
+		XXX_sizecache:        0,
+	})
+
 	time.Sleep(time.Second * 3)
 
 	return execWait(fmt.Sprintf("argocd.argoproj.io/instance=%s", issueLower), cfg)

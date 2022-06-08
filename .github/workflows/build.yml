@@ -8,20 +8,16 @@ on:
       - feat/**
 
 jobs:
-  build_go_binary_and_release:
-    name: Build go binary and release
+  build_argocd:
+    name: Build ArgoCD
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - name: Setup golang
         uses: actions/setup-go@v2
         with:
           go-version: ^1.18
-
       - uses: actions/cache@v3
         with:
           path: |
@@ -30,19 +26,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 14
-
-      - name: Build Ticket Action
-        working-directory: ./ticket
-        shell: bash
-        run: |
-          env GOOS=linux GOARCH=amd64 go build -o dist/linux
-          env GOOS=windows GOARCH=amd64 go build -o dist/windows
-          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
-
       - name: Build ArgoCD Install Action
         working-directory: ./argocd
         shell: bash
@@ -50,6 +33,74 @@ jobs:
           env GOOS=linux GOARCH=amd64 go build -o dist/linux
           env GOOS=windows GOARCH=amd64 go build -o dist/windows
           env GOOS=darwin GOARCH=amd64 go build -o dist/macos
+      - name: "Upload Artifacts"
+        if: env.DRY_RUN == false
+        uses: actions/upload-artifact@v3
+        with:
+          name: ticket
+          path: ./argocd/dist/
+
+  build_ticket:
+    name: Build Ticket Vars
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Build Ticket Action
+        working-directory: ./ticket
+        shell: bash
+        run: |
+          env GOOS=linux GOARCH=amd64 go build -o dist/linux
+          env GOOS=windows GOARCH=amd64 go build -o dist/windows
+          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
+      - name: "Upload Artifacts"
+        if: env.DRY_RUN == false
+        uses: actions/upload-artifact@v3
+        with:
+          name: ticket
+          path: ./ticket/dist/
+
+  release:
+    name: Release
+    runs-on: ubuntu-20.04
+    needs: ["build_argocd", "build_ticket"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: "Download Ticket Artifacts"
+        if: env.DRY_RUN == false
+        uses: actions/download-artifact@v3
+        id: frontend
+        with:
+          name: ticket
+          path: ./ticket/dist/
+
+      - name: "Download ArgoCD Artifacts"
+        if: env.DRY_RUN == false
+        uses: actions/download-artifact@v3
+        id: frontend
+        with:
+          name: argocd
+          path: ./argocd/dist/
 
       - name: "Update Versions"
         uses: paulhatch/semantic-version@v4.0.3

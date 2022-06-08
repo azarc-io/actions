@@ -50,6 +50,15 @@ inputs:
   use-sudo:
     required: false
     description: "True if sudo should be used when executing shell commands"
+  jira-base-url:
+    required: false
+    description: "The base url for Jira"
+  jira-user-email:
+    required: false
+    description: "The Jira user email address"
+  jira-api-token:
+    required: false
+    description: "The Jira API token"
 outputs:
   repository-uri:
     description: 'The docker registry to use'
@@ -68,6 +77,8 @@ runs:
       shell: bash
       run: |
         git config --global --add safe.directory /__w/verathread/verathread
+        git config --global user.email "${{ github.event.pusher.email }}"
+        git config --global user.name "${{ github.event.pusher.name }}"
     - name: "Download Latest Earthly"
       shell: bash
       run: |
@@ -111,6 +122,13 @@ runs:
       uses: int128/create-ecr-repository-action@v1
       with:
         repository: ${{ inputs.repository-name }}
+    - name: Login To Jira
+      uses: atlassian/gajira-login@master
+      if: inputs.jira_api_token != '' && inputs.jira_user_email != '' && inputs.jira_base_url != ''
+      env:
+        JIRA_BASE_URL: ${{ inputs.jira-base-url }}
+        JIRA_USER_EMAIL: ${{ inputs.jira-user-email }}
+        JIRA_API_TOKEN: ${{ inputs.jira-api-token }}
     - name: "Generate Code Artifact .npmrc Credentials"
       shell: bash
       if: inputs.npmrc-fontawesome-token != '' && inputs.npmrc-output-path != ''
