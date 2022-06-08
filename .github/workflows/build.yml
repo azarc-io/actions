@@ -72,6 +72,38 @@ jobs:
           name: ticket
           path: ./ticket/dist/
 
+  build_slack:
+    name: Build Ticket Vars
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Build Ticket Action
+        working-directory: ./slack
+        shell: bash
+        run: |
+          npm install
+          npm run release
+      - name: "Upload Artifacts"
+        if: env.DRY_RUN == false
+        uses: actions/upload-artifact@v3
+        with:
+          name: slack
+          path: ./slack/lib/
+
   release:
     name: Release
     runs-on: ubuntu-20.04
@@ -79,12 +111,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 14
 
       - name: "Download Ticket Artifacts"
         if: env.DRY_RUN == false
@@ -101,6 +127,14 @@ jobs:
         with:
           name: argocd
           path: ./argocd/dist/
+
+      - name: "Download Slack Artifacts"
+        if: env.DRY_RUN == false
+        uses: actions/download-artifact@v3
+        id: frontend
+        with:
+          name: slack
+          path: ./slack/dist/
 
       - name: "Update Versions"
         uses: paulhatch/semantic-version@v4.0.3
