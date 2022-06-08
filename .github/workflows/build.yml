@@ -31,13 +31,13 @@ jobs:
         shell: bash
         run: |
           env GOOS=linux GOARCH=amd64 go build -o dist/linux
-          env GOOS=windows GOARCH=amd64 go build -o dist/windows
-          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
+#          env GOOS=windows GOARCH=amd64 go build -o dist/windows
+#          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
       - name: "Upload Artifacts"
         if: env.DRY_RUN == false
         uses: actions/upload-artifact@v3
         with:
-          name: ticket
+          name: argocd
           path: ./argocd/dist/
 
   build_ticket:
@@ -63,8 +63,8 @@ jobs:
         shell: bash
         run: |
           env GOOS=linux GOARCH=amd64 go build -o dist/linux
-          env GOOS=windows GOARCH=amd64 go build -o dist/windows
-          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
+#          env GOOS=windows GOARCH=amd64 go build -o dist/windows
+#          env GOOS=darwin GOARCH=amd64 go build -o dist/macos
       - name: "Upload Artifacts"
         if: env.DRY_RUN == false
         uses: actions/upload-artifact@v3
