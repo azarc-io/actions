@@ -113,7 +113,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 3
+          fetch-depth: 0
       - name: "Download Ticket Artifacts"
         if: env.DRY_RUN == false
         uses: actions/download-artifact@v3
