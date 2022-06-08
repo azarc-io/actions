@@ -107,7 +107,7 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-20.04
-    needs: ["build_argocd", "build_ticket"]
+    needs: ["build_argocd", "build_ticket", "build_slack"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -131,7 +131,7 @@ jobs:
       - name: "Download Slack Artifacts"
         if: env.DRY_RUN == false
         uses: actions/download-artifact@v3
-        id: frontend
+        id: slack
         with:
           name: slack
           path: ./slack/dist/
